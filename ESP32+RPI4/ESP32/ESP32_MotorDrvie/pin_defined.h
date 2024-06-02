@@ -41,3 +41,6 @@
 #define freq 30000
 #define pwmChannel 0
 #define resolution 8
+int dutyCycle = 200;
+
+

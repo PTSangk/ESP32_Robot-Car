@@ -39,7 +39,7 @@ void rotateMotor(int motorNumber, int motorDirection) {
   }
 }
 
-void processCarMovement(int inputValue) {
+void moveCar(int inputValue) {
   //Serial.printf("Got value as %s %d\n", inputValue.c_str(), inputValue.toInt());  Sang
   Serial.printf("Got value as %d\n", inputValue);
   //switch(inputValue.toInt())
@@ -174,7 +174,7 @@ void loop() {
     // Move DC motor forward with increasing speed
     moveCar(UP);
     while (dutyCycle <= 255) {
-      ledcWrite(PWMSpeedChannel, dutyCycle);
+      ledcWrite(pwmChannel, dutyCycle);
       Serial.print("Forward with duty cycle: ");
       Serial.println(dutyCycle);
       dutyCycle = dutyCycle + 5;
