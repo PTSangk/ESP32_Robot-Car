@@ -8,9 +8,10 @@ struct MOTOR_PINS
 std::vector<MOTOR_PINS> motorPins = 
 {
   {12, 13, 15},  //RIGHT_MOTOR Pins (EnA, IN1, IN2)
-  {12, 14, 2},  //LEFT_MOTOR  Pins (EnB, IN3, IN4)
+ {12, 14, 2},  //LEFT_MOTOR  Pins (EnB, IN3, IN4)
+ 
 };
-#define LIGHT_PIN 4
+// 28June24 #define LIGHT_PIN 4
 
 #define UP 1
 #define DOWN 2
@@ -28,6 +29,9 @@ const int PWMFreq = 1000; /* 1 KHz */
 const int PWMResolution = 8;
 const int PWMSpeedChannel = 2;
 const int PWMLightChannel = 3;
+
+int slRead = 0;
+int srRead = 0;
 
 //Camera related constants
 #define PWDN_GPIO_NUM     32
@@ -47,12 +51,12 @@ const int PWMLightChannel = 3;
 #define HREF_GPIO_NUM     23
 #define PCLK_GPIO_NUM     22
 
-#define  SensorRIGHT            4  // RIGHT sensor connected to analog pin ADC2_0
-#define  SensorLEFT             0 // LEFT sensor connected to analog pin ADC2_1
+#define  SensorRIGHT            1  // RIGHT sensor 
+#define  SensorLEFT             4  // LEFT sensor 
 //https://i0.wp.com/randomnerdtutorials.com/wp-content/uploads/2018/08/esp32-pinout-chip-ESP-WROOM-32.png?quality=100&strip=all&ssl=1
 
 
-const char* ssid     = "robot_car_01";
+const char* ssid     = "robot_car_09";
 const char* password = "123456789";
 
 AsyncWebServer server(80);

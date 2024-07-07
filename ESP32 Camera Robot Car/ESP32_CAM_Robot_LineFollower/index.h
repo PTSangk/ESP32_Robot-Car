@@ -1,8 +1,6 @@
 const char* htmlHomePage PROGMEM = R"HTMLHOMEPAGE(
 
 
-
-<!DOCTYPE html>
 <html>
 
 <head>
@@ -97,41 +95,53 @@ const char* htmlHomePage PROGMEM = R"HTMLHOMEPAGE(
             display: none;
         }
 
-        .image-container {
-            position: relative;
-            width: 400px;
-            height: 350px;
-            text-align: center;
-            margin: auto;
+       
+		
+	.image-container {
+    position: relative;
+    width: 700px;
+    max-width: 100%; /* Max width to match the new width after rotation */
+    height:550px;
+    margin: 0 auto; /* Center the container horizontally */
+    overflow: hidden;
+}
 
-
-        }
-
-        .responsive-iframe {
-            position: relative;
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-            margin-top: auto;
-            transform: rotate(90deg);
-
-        }
-            
+.responsive-iframe {
+    position: absolute;
+    width: 640px;
+    height:640px;
+    
+    overflow: hidden;
+    transform: translate(-50%, -50%) rotate(90deg);
+    transform-origin: center;
+	  zoom: 1;
+    margin-top: 300px;
+    margin-left: -85px;
+    margin-right: auto;
+}
+		.table2{
+		padding-top: auto;
+		position: relative;
+		width:400px;
+		table-layout:fixed ; 
+		margin-top:auto;
+		margin-left:auto;
+		margin-right:auto;
+		}
 
     </style>
 
 </head>
 
-<body class="noselect" text-align="center" style="background-color: white;">
+<body class="noselect" style="background-color: white; text-align: center;">
     <!-- <div id="stream-container" class="image-container hidden">-->
     <div class="image-container hidden" id="stream-container">
         <center>
             <!-- <iframe id="stream" src="" frameborder="0" width="400" height="288" scrolling="no" display="block"></iframe>-->
-            <iframe class="responsive-iframe" id="stream" src="" frameborder="0" width="300" height="400" scrolling="no"
-                display="block"></iframe>
+            <iframe class="responsive-iframe" id="stream" src="" frameborder="0"></iframe>
         </center>
     </div>
-    <table id="mainTable" style="width:400px;table-layout:fixed ; margin-top:40px;margin-left:auto;margin-right:auto;" CELLSPACING=10>
+    <table id="mainTable" class = "table2" CELLSPACING=10>
         <tr>
             <td>
                 <!--<button id="toggle-stream">Start Stream</button>-->
@@ -176,7 +186,8 @@ const char* htmlHomePage PROGMEM = R"HTMLHOMEPAGE(
                 </div>
             </td>
         </tr>
-        <tr>
+       <!--<tr>
+				30 June 2024 OFF
             <td style="text-align:left"><b>Light:</b></td>
             <td colspan=2>
                 <div class="slidecontainer">
@@ -184,7 +195,7 @@ const char* htmlHomePage PROGMEM = R"HTMLHOMEPAGE(
                         oninput='sendButtonInput("Light",value)'>
                 </div>
             </td>
-        </tr>
+        </tr>-->
     </table>
 
     <script>
@@ -195,7 +206,7 @@ const char* htmlHomePage PROGMEM = R"HTMLHOMEPAGE(
         var webSocketCarInputUrl = "ws:\/\/" + window.location.hostname + "/CarInput";
         var websocketCarInput;
         //var value = 0;
-        var toggleState = 0; //sang 
+		var toggleState = 0; 
         let websocketCamera;
         let streamTimeout;
         window.onload = initCarInputWebSocket;
@@ -209,13 +220,15 @@ const char* htmlHomePage PROGMEM = R"HTMLHOMEPAGE(
                 var speedButton = document.getElementById("Speed");
                 sendButtonInput("Speed", speedButton.value);
                 console.log("Speed value: " + value); // sang
+				 /* 30 June 2024 OFF
                 var lightButton = document.getElementById("Light");
                 sendButtonInput("Light", lightButton.value);
                 console.log("Light value: " + value); // sang
+				*/
             };
             websocketCarInput.onclose = function (event) { setTimeout(initCarInputWebSocket, 2000); };
             websocketCarInput.onmessage = function (event) { };
-            toggleState = 0;
+			toggleState = 0;
         }
 
         const stopStream = () => {
@@ -231,6 +244,8 @@ const char* htmlHomePage PROGMEM = R"HTMLHOMEPAGE(
         };
 
         const startStream = () => {
+			 //viewContainer.classList.remove('hidden');
+			 //view.src = "C:\Users\Acer\OneDrive\Desktop\Sank\ESP32-CAMERA\ESP32_CAM\images.jpg";
             if (!websocketCamera || websocketCamera.readyState === WebSocket.CLOSED) {
                 const webSocketUrl = 'ws://' + window.location.hostname + '/Camera';
 
@@ -314,16 +329,19 @@ const char* htmlHomePage PROGMEM = R"HTMLHOMEPAGE(
             event.preventDefault(); // Prevent default touch behavior
             // Handle touch start event if needed
         });
-        function onToggle() {
+		function onToggle() {
             toggleState = !toggleState;
             //var value = toggleState ? "1" : "0";
-            if (toggleState ? 1 : 0)
+            if (toggleState ? "1" : "0")
                 updateLedToggleButton();
-                if(toggleState == 1){
-                    sendButtonInput("Mode","1");
+                if(toggleState == "1"){
+                    sendButtonInput("Mode","1"); // change mode to auto / line follower
+                    sendButtonInput("Speed","95"); //add speed  PWM 95
+                    sendButtonInput("MoveCar","0") // stop car 
                 }
                else {
-                sendButtonInput("Mode","0");
+                sendButtonInput("Mode","0"); // change mode to manual
+                sendButtonInput("MoveCar","0") // stop car 
                }
         }
         function updateLedToggleButton() {
@@ -334,10 +352,9 @@ const char* htmlHomePage PROGMEM = R"HTMLHOMEPAGE(
                ledToggleButton.src = "data:image/png;base64,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";
                 
             }
-            //ledToggleButton.innerHTML = toggleState ? "&#128162;" : "&#128161;"; // เปลี่ยนไอคอนตามสถานะ
+            //ledToggleButton.innerHTML = toggleState ? "&#128162;" : "&#128161;"; // ����¹�ͤ͹���ʶҹ�
 
         }
-
 
         streamButton.addEventListener('touchend', function (event) {
             event.preventDefault(); // Prevent default touch behavior
@@ -361,18 +378,10 @@ const char* htmlHomePage PROGMEM = R"HTMLHOMEPAGE(
         document.getElementById('mainTable').addEventListener('touchend', (event) => {
             event.preventDefault();
         });
-        
-
-
     </script>
 </body>
 
 </html>
-
-
-
-
-
 
 
 

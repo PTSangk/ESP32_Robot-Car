@@ -85,7 +85,8 @@ void onCarInputWebSocketEvent(AsyncWebSocket *server,
       break;
     case WS_EVT_DISCONNECT:
       Serial.printf("WebSocket client #%u disconnected\n", client->id());
-      moveCar(0);
+      moveCar(STOP);
+      mode = 0;
       ledcWrite(PWMLightChannel, 0);
       break;
     case WS_EVT_DATA:
@@ -101,17 +102,24 @@ void onCarInputWebSocketEvent(AsyncWebSocket *server,
         Serial.printf("Key [%s] Value[%s]\n", key.c_str(), value.c_str());
         int valueInt = atoi(value.c_str());
         if (key == "MoveCar" && mode == 0) {
+          //if (key == "MoveCar") {
           moveCar(valueInt);
-        } 
-        else if (key == "Speed") {
-          ledcWrite(PWMSpeedChannel, valueInt);
-        } 
-        else if (key == "Light") {
+        } else if (key == "Speed") {
+          if (mode == 0) {
+            ledcWrite(PWMSpeedChannel, valueInt);
+          } else if (mode == 1) {
+            ledcWrite(PWMSpeedChannel, 90);
+          }  //95
+             //ledcWrite(PWMSpeedChannel, valueInt);
+        } else if (key == "Light") {
           ledcWrite(PWMLightChannel, valueInt);
-        }
-        else if(key == "Mode"){
+        } else if (key == "Mode") {
           mode = valueInt;
-          Serial.printf("mode %d \n", mode);
+          moveCar(STOP);
+          //Serial.printf("mode %d \n", mode);
+          //if(mode == 0){ledcWrite(PWMSpeedChannel, 150);moveCar(STOP); }
+          //else if(mode == 1) { moveCar(STOP);} //95
+
           //mode = value.c_str();
           //Serial.printf("mode %s \n", mode);
         }
@@ -195,12 +203,11 @@ void setupCamera() {
     heap_caps_malloc_extmem_enable(20000);
     Serial.printf("PSRAM initialized. malloc to take memory from psram above this size");
   }
-  
-//ESP32-CAM OV2640 Camera Settings for rotate 90
+
+  //ESP32-CAM OV2640 Camera Settings for rotate 90
   sensor_t *s = esp_camera_sensor_get();
   s->set_vflip(s, 1);
   s->set_hmirror(s, 1);
-
 }
 
 void sendCameraPicture() {
@@ -237,7 +244,7 @@ void sendCameraPicture() {
 void setUpPinModes() {
   //Set up PWM
   ledcSetup(PWMSpeedChannel, PWMFreq, PWMResolution);
-  ledcSetup(PWMLightChannel, PWMFreq, PWMResolution);
+  // 28June24 ledcSetup(PWMLightChannel, PWMFreq, PWMResolution);
 
   for (int i = 0; i < motorPins.size(); i++) {
     pinMode(motorPins[i].pinEn, OUTPUT);
@@ -249,18 +256,18 @@ void setUpPinModes() {
   }
   moveCar(STOP);
 
-  pinMode(LIGHT_PIN, OUTPUT);
-  ledcAttachPin(LIGHT_PIN, PWMLightChannel);
+  // 28June24 pinMode(LIGHT_PIN, OUTPUT);
+  // 28June24 ledcAttachPin(LIGHT_PIN, PWMLightChannel);
   //pinMode(PWDN_GPIO_NUM, OUTPUT);
-
-  pinMode(RIGHT, INPUT); // initialize RIGHT pin as an input
-  pinMode(LEFT, INPUT); // initialize ENA pin as an input
 }
 
 
 void setup(void) {
 
   WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0);  // disable brownout detector
+    //declaring pin types
+  pinMode(SensorRIGHT, INPUT);
+  pinMode(SensorLEFT, INPUT);
   setUpPinModes();
   Serial.begin(115200);
 
@@ -287,34 +294,36 @@ void setup(void) {
 
 void loop() {
 
-      wsCamera.cleanupClients();
-      wsCarInput.cleanupClients();
-      sendCameraPicture();
-      delay(100);  // Adjust delay based on streaming frame rate
-      //Serial.printf("SPIRam Total heap %d, SPIRam Free Heap %d\n", ESP.getPsramSize(), ESP.getFreePsram());
-      if(mode == 1){
-        if (analogRead(SensorRIGHT)<=35 && analogRead(SensorLEFT)<=35) //compare the both sensor to decide the direction
-        {
-          //MOVE FORWARD//
-          moveCar(UP);
-        }
-        else if (analogRead(SensorRIGHT)<=35 && !analogRead(SensorLEFT)<=35) //compare the both sensor to decide the direction
-        {
-          //MOVE RIGHT//
-          moveCar(RIGHT);
-        }
-        else if (!analogRead(SensorRIGHT)<=35 && analogRead(SensorLEFT)<=35) //compare the both sensor to decide the direction
-        { 
-          //MOVE-LEFT//
-          moveCar(LEFT);
-        }
-        else if (!analogRead(SensorRIGHT)<=35 && !analogRead(SensorLEFT)<=35) //compare the both sensor to decide the direction
-        { 
-          //STOP//
-          moveCar(STOP);
-        }
-
-
-      }
-
+  wsCamera.cleanupClients();
+  wsCarInput.cleanupClients();
+  sendCameraPicture();
+  //delay(100);  // Adjust delay based on streaming frame rate
+  //Serial.printf("SPIRam Total heap %d, SPIRam Free Heap %d\n", ESP.getPsramSize(), ESP.getFreePsram());
+  slRead = digitalRead(SensorLEFT);
+  srRead = digitalRead(SensorRIGHT);
+  if (mode == 1) {
+    if (slRead == 0 && srRead == 0) {
+      //Forward
+      moveCar(UP);
+      //delay(100);
+    }
+    //line detected by left sensor
+    if (slRead == 0 && !srRead == 0) {
+      //turn left
+      moveCar(LEFT);
+      delay(300);  //150
+    }
+    //line detected by right sensor
+    if (!slRead == 0 && srRead == 0) {
+      //turn right
+      moveCar(RIGHT);
+      delay(300);
+    }
+    //line detected by none
+    if (!slRead == 0 && !srRead == 0) {
+      //stop
+      moveCar(STOP);
+      //delay(100);
+    }
+  }
 }
