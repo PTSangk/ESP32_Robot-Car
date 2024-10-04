@@ -124,9 +124,10 @@ void onCarInputWebSocketEvent(AsyncWebSocket *server,
           //mode = value.c_str();
           //Serial.printf("mode %s \n", mode);
         }
-        else if((key == "led")){
+        else if(key == "led"){
           //ledstatus = valueInt;
           digitalWrite(ledPin,valueInt);
+          delay(200);
         }
       }
       break;
