@@ -1,6 +1,7 @@
 const char* htmlHomePage PROGMEM = R"HTMLHOMEPAGE(
 
 
+
 <html>
 
 <head>
@@ -24,7 +25,11 @@ const char* htmlHomePage PROGMEM = R"HTMLHOMEPAGE(
             display: inline-block;
             font-size: 13px;
         }
-
+        .button2 {
+            font-size: 28px;
+            text-align: center;
+            color: white;
+        }
         td.button {
             background-color: #FF4060;
             border-radius: 10%;
@@ -179,11 +184,18 @@ const char* htmlHomePage PROGMEM = R"HTMLHOMEPAGE(
         </tr>
         <tr>
             <td style="text-align:left"><b>Speed:</b></td>
+
             <td colspan=2>
                 <div class="slidecontainer">
                     <input type="range" min="0" max="255" value="150" class="slider" id="Speed"
                         oninput='sendButtonInput("Speed",value)'>
                 </div>
+            </td>
+        </tr>
+        <tr>
+            <td class="button" onclick="updateLedstatus()">
+                
+                <span id = "ledToggle" class="button2" >LED OFF</span>
             </td>
         </tr>
        <!--<tr>
@@ -205,13 +217,14 @@ const char* htmlHomePage PROGMEM = R"HTMLHOMEPAGE(
 
         var webSocketCarInputUrl = "ws:\/\/" + window.location.hostname + "/CarInput";
         var websocketCarInput;
-        //var value = 0;
+        var valuetoggle = 0; //LED
 		var toggleState = 0; 
         let websocketCamera;
         let streamTimeout;
         window.onload = initCarInputWebSocket;
         document.getElementById("ledToggleButton").addEventListener("touchend", function (event) {
             onToggle();
+            updateLedstatus();
             event.preventDefault()
         });
         function initCarInputWebSocket() {
@@ -229,6 +242,7 @@ const char* htmlHomePage PROGMEM = R"HTMLHOMEPAGE(
             websocketCarInput.onclose = function (event) { setTimeout(initCarInputWebSocket, 2000); };
             websocketCarInput.onmessage = function (event) { };
 			toggleState = 0;
+            valuetoggle = 0;
         }
 
         const stopStream = () => {
@@ -355,7 +369,23 @@ const char* htmlHomePage PROGMEM = R"HTMLHOMEPAGE(
             //ledToggleButton.innerHTML = toggleState ? "&#128162;" : "&#128161;"; // ����¹�ͤ͹���ʶҹ�
 
         }
+        function updateLedstatus() {
+            var ledToggle = document.getElementById("ledToggle");
+            valuetoggle = !valuetoggle;
+            if (valuetoggle ? "1" : "0");
+            if(valuetoggle == "0"){
+            ledToggle.innerHTML = 'LED OFF';
+            sendButtonInput("led","0");
+            }else{
+                ledToggle.innerHTML = 'LED ON';
+                sendButtonInput("led","1");
+            }
+            
+            //ledToggle.style.color = 'white';
+            //ledToggle.style.backgroundColor = '#b30c0c';
 
+
+        }
         streamButton.addEventListener('touchend', function (event) {
             event.preventDefault(); // Prevent default touch behavior
             if (streamButton.innerHTML === 'Stop Stream') {
@@ -382,7 +412,6 @@ const char* htmlHomePage PROGMEM = R"HTMLHOMEPAGE(
 </body>
 
 </html>
-
 
 
 )HTMLHOMEPAGE";
