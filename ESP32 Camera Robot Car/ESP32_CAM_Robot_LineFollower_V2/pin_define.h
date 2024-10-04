@@ -53,7 +53,7 @@ int srRead = 0;
 
 #define  SensorRIGHT            1  // RIGHT sensor 
 #define  SensorLEFT             4  // LEFT sensor 
-#define  ledPin                 16  // LED input
+#define  ledPin                 3  // LED input
 //https://i0.wp.com/randomnerdtutorials.com/wp-content/uploads/2018/08/esp32-pinout-chip-ESP-WROOM-32.png?quality=100&strip=all&ssl=1
 
 
