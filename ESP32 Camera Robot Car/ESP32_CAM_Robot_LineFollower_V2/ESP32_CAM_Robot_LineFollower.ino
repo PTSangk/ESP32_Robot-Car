@@ -112,7 +112,7 @@ void onCarInputWebSocketEvent(AsyncWebSocket *server,
             ledcWrite(PWMSpeedChannel, 90);
           }  //95
              //ledcWrite(PWMSpeedChannel, valueInt);
-        } else if (key == "Light") {
+        } else if (key == "LED") {
           ledcWrite(PWMLightChannel, valueInt);
         } else if (key == "Mode") {
           mode = valueInt;
@@ -126,7 +126,7 @@ void onCarInputWebSocketEvent(AsyncWebSocket *server,
         }
         else if(key == "led"){
           //ledstatus = valueInt;
-          digitalWrite(ledPin,valueInt);
+          //digitalWrite(ledPin,valueInt);
           delay(200);
         }
       }
@@ -250,7 +250,7 @@ void sendCameraPicture() {
 void setUpPinModes() {
   //Set up PWM
   ledcSetup(PWMSpeedChannel, PWMFreq, PWMResolution);
-  // 28June24 ledcSetup(PWMLightChannel, PWMFreq, PWMResolution);
+  ledcSetup(PWMLightChannel, PWMFreq, PWMResolution);
 
   for (int i = 0; i < motorPins.size(); i++) {
     pinMode(motorPins[i].pinEn, OUTPUT);
@@ -262,8 +262,8 @@ void setUpPinModes() {
   }
   moveCar(STOP);
 
-  // 28June24 pinMode(LIGHT_PIN, OUTPUT);
-  // 28June24 ledcAttachPin(LIGHT_PIN, PWMLightChannel);
+  pinMode(ledPin, OUTPUT);
+  ledcAttachPin(ledPin, PWMLightChannel);
   //pinMode(PWDN_GPIO_NUM, OUTPUT);
 }
 
@@ -274,9 +274,9 @@ void setup(void) {
     //declaring pin types
   pinMode(SensorRIGHT, INPUT);
   pinMode(SensorLEFT, INPUT);
-  pinMode(ledPin, OUTPUT);
+  //pinMode(ledPin, OUTPUT);
   setUpPinModes();
-  Serial.begin(115200);
+  //Serial.begin(115200);
 
   WiFi.softAP(ssid, password);
   IPAddress IP = WiFi.softAPIP();
