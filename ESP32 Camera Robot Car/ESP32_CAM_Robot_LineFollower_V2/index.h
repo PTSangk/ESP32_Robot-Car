@@ -1,6 +1,5 @@
 const char* htmlHomePage PROGMEM = R"HTMLHOMEPAGE(
 
-
 <html>
 
 <head>
@@ -15,7 +14,7 @@ const char* htmlHomePage PROGMEM = R"HTMLHOMEPAGE(
 
         .button1 {
             background-color: #04AA6D;
-            border: none;
+             border: none;
             color: white;
             padding: 5px 10px;
             text-align: center;
@@ -258,6 +257,16 @@ const char* htmlHomePage PROGMEM = R"HTMLHOMEPAGE(
             </td>
         </tr>
         <tr>
+            <td style="text-align:left"><b>LED:</b></td>
+
+            <td colspan=2>
+                <div class="slidecontainer">
+                    <input type="range" min="0" max="255" value="0" class="slider" id="LED"
+                        oninput='sendButtonInput("LED",value)'>
+                </div>
+            </td>
+        </tr>
+        <tr>
             <td onclick="updateLedstatus()">
 
                 <span id="ledToggle" class="button-13">LED OFF</span>
@@ -297,6 +306,9 @@ const char* htmlHomePage PROGMEM = R"HTMLHOMEPAGE(
                 var speedButton = document.getElementById("Speed");
                 sendButtonInput("Speed", speedButton.value);
                 console.log("Speed value: " + value); // sang
+                var LEDButton = document.getElementById("LED");
+                sendButtonInput("LED", LEDButton.value);
+                console.log("LED value: " + value); // sang
                 /* 30 June 2024 OFF
                var lightButton = document.getElementById("Light");
                sendButtonInput("Light", lightButton.value);
@@ -415,11 +427,13 @@ const char* htmlHomePage PROGMEM = R"HTMLHOMEPAGE(
             if (ModeButtonToggleState == "1") {
                 sendButtonInput("Mode", "1"); // change mode to auto / line follower
                 sendButtonInput("Speed", "95"); //add speed  PWM 95
+                sendButtonInput("LED", "0"); //add LED  PWM 0
                 sendButtonInput("MoveCar", "0") // stop car 
             }
             else {
                 sendButtonInput("Mode", "0"); // change mode to manual
                 sendButtonInput("MoveCar", "0") // stop car 
+                sendButtonInput("LED", "0"); //add LED  PWM 0
             }
         }
         function updateModeButton() {
@@ -480,5 +494,6 @@ const char* htmlHomePage PROGMEM = R"HTMLHOMEPAGE(
 </body>
 
 </html>
+
 
 )HTMLHOMEPAGE";
