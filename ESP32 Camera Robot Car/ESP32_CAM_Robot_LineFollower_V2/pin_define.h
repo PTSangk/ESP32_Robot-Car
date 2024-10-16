@@ -8,7 +8,7 @@ struct MOTOR_PINS
 std::vector<MOTOR_PINS> motorPins = 
 {
   {12, 13, 15},  //RIGHT_MOTOR Pins (EnA, IN1, IN2)
- {12, 14, 3},  //LEFT_MOTOR  Pins (EnB, IN3, IN4)
+ {12, 14, 2},  //LEFT_MOTOR  Pins (EnB, IN3, IN4)
  
 };
 // 28June24 #define LIGHT_PIN 4
@@ -28,7 +28,7 @@ std::vector<MOTOR_PINS> motorPins =
 const int PWMFreq = 1000; /* 1 KHz */
 const int PWMResolution = 8;
 const int PWMSpeedChannel = 12; // change PWM to GPIO 12
-const int PWMLightChannel = 4;
+//const int PWMLightChannel = 12;
 
 int slRead = 0;
 int srRead = 0;
@@ -52,8 +52,8 @@ int srRead = 0;
 #define PCLK_GPIO_NUM     22
 
 #define  SensorRIGHT            1  // RIGHT sensor 
-#define  SensorLEFT             2  // LEFT sensor 
-#define  ledPin                 4  // LED input
+#define  SensorLEFT             4  // LEFT sensor 
+#define  ledPin                 3  // LED input
 //https://i0.wp.com/randomnerdtutorials.com/wp-content/uploads/2018/08/esp32-pinout-chip-ESP-WROOM-32.png?quality=100&strip=all&ssl=1
 
 
