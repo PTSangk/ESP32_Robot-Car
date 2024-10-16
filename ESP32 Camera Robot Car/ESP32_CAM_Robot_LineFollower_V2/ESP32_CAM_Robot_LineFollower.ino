@@ -88,7 +88,7 @@ void onCarInputWebSocketEvent(AsyncWebSocket *server,
       Serial.printf("WebSocket client #%u disconnected\n", client->id());
       moveCar(STOP);
       mode = 0;
-      ledcWrite(PWMLightChannel, 0);
+      //ledcWrite(PWMLightChannel, 0);
       break;
     case WS_EVT_DATA:
       AwsFrameInfo *info;
@@ -112,9 +112,11 @@ void onCarInputWebSocketEvent(AsyncWebSocket *server,
             ledcWrite(PWMSpeedChannel, 90);
           }  //95
              //ledcWrite(PWMSpeedChannel, valueInt);
-        } else if (key == "LED") {
-          ledcWrite(PWMLightChannel, valueInt);
-        } else if (key == "Mode") {
+        }
+         //else if (key == "LED") {
+        //  ledcWrite(PWMLightChannel, valueInt);
+       // } 
+        else if (key == "Mode") {
           mode = valueInt;
           moveCar(STOP);
           //Serial.printf("mode %d \n", mode);
@@ -126,7 +128,7 @@ void onCarInputWebSocketEvent(AsyncWebSocket *server,
         }
         else if(key == "led"){
           //ledstatus = valueInt;
-          //digitalWrite(ledPin,valueInt);
+          digitalWrite(ledPin,valueInt);
           delay(200);
         }
       }
@@ -250,7 +252,7 @@ void sendCameraPicture() {
 void setUpPinModes() {
   //Set up PWM
   ledcSetup(PWMSpeedChannel, PWMFreq, PWMResolution);
-  ledcSetup(PWMLightChannel, PWMFreq, PWMResolution);
+  //ledcSetup(PWMLightChannel, PWMFreq, PWMResolution);
 
   for (int i = 0; i < motorPins.size(); i++) {
     pinMode(motorPins[i].pinEn, OUTPUT);
@@ -263,7 +265,7 @@ void setUpPinModes() {
   moveCar(STOP);
 
   pinMode(ledPin, OUTPUT);
-  ledcAttachPin(ledPin, PWMLightChannel);
+  //ledcAttachPin(ledPin, PWMLightChannel);
   //pinMode(PWDN_GPIO_NUM, OUTPUT);
 }
 
