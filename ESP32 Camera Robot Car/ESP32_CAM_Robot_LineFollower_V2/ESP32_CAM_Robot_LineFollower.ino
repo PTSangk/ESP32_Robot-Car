@@ -190,7 +190,7 @@ void setupCamera() {
   config.pixel_format = PIXFORMAT_JPEG;
 
   config.frame_size = FRAMESIZE_VGA;
-  config.jpeg_quality = 10;
+  config.jpeg_quality = 20; //10-63 lower number means higher quality
   config.fb_count = 1;
 
 
