@@ -28,7 +28,7 @@ std::vector<MOTOR_PINS> motorPins =
 const int PWMFreq = 1000; /* 1 KHz */
 const int PWMResolution = 8;
 const int PWMSpeedChannel = 12; // change PWM to GPIO 12
-//const int PWMLightChannel = 12;
+const int PWMLightChannel = 3;
 
 int slRead = 0;
 int srRead = 0;
