@@ -486,11 +486,10 @@ const char *htmlHomePage PROGMEM = R"HTMLHOMEPAGE(
             //ledToggle.style.color = 'white';
             //ledToggle.style.backgroundColor = '#b30c0c';
         }
-        
         async function takeshot() {
             try {
-                //const stream = document.getElementById('stream');
-                //const capturedImage = document.getElementById('capturedImage');
+                const stream = document.getElementById('stream');
+                const capturedImage = document.getElementById('capturedImage');
 
                 if (!stream?.src) {
                     console.error('No stream available.');
@@ -508,7 +507,7 @@ const char *htmlHomePage PROGMEM = R"HTMLHOMEPAGE(
                 // Create a canvas to capture the stream’s frame
                 const canvas = document.createElement('canvas');
                 const context = canvas.getContext('2d');
-                canvas.width = stream.naturalWidth || 640 /2;
+                canvas.width = stream.naturalWidth || 640/2;
                 canvas.height = stream.naturalHeight || 480/2;
 
                 // Draw the image onto the canvas
@@ -521,6 +520,32 @@ const char *htmlHomePage PROGMEM = R"HTMLHOMEPAGE(
                 console.error('Error capturing image:', error);
             }
         }
+
+        // Set up the download button functionality
+        document.getElementById('downloadBtn').onclick = function () {
+            if (!lastImageDataUrl) {
+                console.error('No image available to download.');
+                return;
+            }
+
+            const link = document.createElement('a');
+            link.href = lastImageDataUrl;
+            link.download = 'esp32_capture.png';
+            link.click();
+        };
+         
+        // Set up the download button functionality
+        document.getElementById('downloadBtn').onclick = function () {
+            if (!lastImageDataUrl) {
+                console.error('No image available to download.');
+                return;
+            }
+
+            const link = document.createElement('a');
+            link.href = lastImageDataUrl;
+            link.download = 'esp32_capture.png';
+            link.click();
+        };
 
         // Set up the download button functionality
         document.getElementById('downloadBtn').onclick = function () {
