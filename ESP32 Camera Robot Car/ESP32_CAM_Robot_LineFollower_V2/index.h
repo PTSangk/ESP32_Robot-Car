@@ -189,12 +189,33 @@ const char* htmlHomePage PROGMEM = R"HTMLHOMEPAGE(
             console.log(`Sending ${key}=${value}`);
         }
 
-        function takeshot() {
+       /* function takeshot() {
             const capturedImage = document.getElementById('capturedImage');
             capturedImage.src = view.src;
             document.getElementById('output').appendChild(capturedImage);
+        }*/
+        function takeshot() {
+        if (!view.src) {
+            console.error('No image available to capture.');
+            return;
         }
+        
+        // Use a temporary image element to reduce memory usage
+        const tempImage = new Image();
+        tempImage.onload = function() {
+            // Copy the image to the captured image element
+            const capturedImage = document.getElementById('capturedImage');
+            capturedImage.src = tempImage.src;  // Copy the source URL
 
+            // Clear previous image in output to prevent memory bloat
+            const output = document.getElementById('output');
+            output.innerHTML = '';  // Clear previous images
+            output.appendChild(capturedImage);
+        };
+        
+        // Assign the current view source to the temporary image
+        tempImage.src = view.src;
+    }
         document.getElementById('mainTable').addEventListener('click', (event) => {
             const action = event.target.getAttribute('data-action');
             const value = event.target.getAttribute('data-value');
