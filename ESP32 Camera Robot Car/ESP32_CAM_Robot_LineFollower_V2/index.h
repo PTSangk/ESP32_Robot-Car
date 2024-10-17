@@ -481,57 +481,20 @@ const char* htmlHomePage PROGMEM = R"HTMLHOMEPAGE(
             //ledToggle.style.color = 'white';
             //ledToggle.style.backgroundColor = '#b30c0c';
 
-
         }
-       // Function to capture the current frame and save it
-/*function takeshot() {
-    const imageUrl = view.src;  // Get the current image URL
-
-    // Clear previous output and add the new image
-    const output = document.getElementById('output');
-    output.innerHTML = '';  // Remove old images
-    const img = new Image();
-    img.src = imageUrl;
-    output.appendChild(img);  // Show the latest captured image
-
-    // Create a temporary link to download the image
-    const a = document.createElement('a');
-    a.href = imageUrl;
-    a.download = 'captured_image.jpg';  // Set the download name
-    a.click();  // Trigger the download
-}*/
 // Function to capture the current frame from the video stream
 function takeshot() {
-    const img = new Image();  // Create a new image element
-    img.src = view.src;  // Use the current image URL as the source
+    // Directly use the current image displayed in the video stream as the captured image
+    const capturedImage = document.getElementById('capturedImage');
+    capturedImage.src = view.src; // Use the current image URL as the source
 
     // Clear the previous photo from the output div
     const output = document.getElementById('output');
     output.innerHTML = '';  // Remove any existing image
 
     // Append the new captured image to the output div
-    output.appendChild(img);
+    output.appendChild(capturedImage);
 }
-
-// Function to capture the current frame and offer download
-/*function takeshot() {
-    const imageUrl = view.src;  // Use the current image URL
-
-    // Reuse the capturedImage element to display the latest image
-    capturedImage.src = imageUrl;
-
-    // Create a temporary link for downloading the image
-    const a = document.createElement('a');
-    a.href = imageUrl;
-    a.download = 'captured_image.jpg';  // Set the download name
-
-    // Add a small delay before triggering download to avoid ESP32 overload
-    setTimeout(() => a.click(), 100);
-
-    // Clean up object URL after a short time to free memory
-    setTimeout(() => URL.revokeObjectURL(imageUrl), 5000);
-}*/
-
         streamButton.addEventListener('touchend', function (event) {
             event.preventDefault(); // Prevent default touch behavior
             if (streamButton.innerHTML === 'Stop Stream') {
