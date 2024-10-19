@@ -173,7 +173,8 @@ void setupWiFiAndServer() {
 void setup() {
   WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0);  // Disable brownout detector
   //Serial.begin(115200);
-
+  pinMode(SensorRIGHT, INPUT);
+  pinMode(SensorLEFT, INPUT);
   setUpPinModes();
   setupWiFiAndServer();
   setupCamera();
